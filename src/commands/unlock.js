@@ -12,7 +12,8 @@ module.exports = messer => {
 
         const threadName = messer.lock.getLockedTarget();
         messer.lock.unlock();
-        messer.setPrompt("> ");
+        // messer.setPrompt("> ");
+        messer.setPrompt("");
         return resolve(`Unlocked from ${threadName}`);
       });
     },

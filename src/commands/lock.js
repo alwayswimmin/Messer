@@ -19,7 +19,8 @@ module.exports = messer => {
         return getThreadByName(messer.messen, rawReceiver)
           .then(thread => {
             messer.lock.lockOn(thread.name, secret);
-            messer.setPrompt(`${thread.name}${secret ? " 🔒" : ""}> `);
+            // messer.setPrompt(`${thread.name}${secret ? " 🔒" : ""}> `);
+            messer.setPrompt(`${thread.name}${secret ? " 🔒" : ""}`);
 
             return resolve(
               `Locked on to ${thread.name} ${secret ? "(secret mode)" : ""}`,

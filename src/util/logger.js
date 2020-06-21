@@ -10,12 +10,13 @@ function log(content, color, error) {
 
   let message = content;
 
-  if (color) {
-    if (chalk[color]) {
-      message = chalk[color](content);
-    }
-    message = chalk.hex(color)(content);
-  }
+  // Don't format anything.
+  // if (color) {
+  //   if (chalk[color]) {
+  //     message = chalk[color](content);
+  //   }
+  //   message = chalk.hex(color)(content);
+  // }
 
   if (error) {
     console.error(error);

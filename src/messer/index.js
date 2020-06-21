@@ -104,6 +104,7 @@ Messer.prototype.start = function start(interactive = true, rawCommand) {
 
       this.messen.listen();
       repl.start({
+	prompt: '',
         ignoreUndefined: true,
         eval: (input, context, filename, cb) => {
           return this.processCommand(input)

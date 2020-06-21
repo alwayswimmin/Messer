@@ -7,12 +7,12 @@ const { log } = require("./logger");
  * Adds the number of unread messages in the terminal title
  */
 function notifyTerminal(unreadMessagesCount) {
-  const title = unreadMessagesCount
-    ? `messer (${unreadMessagesCount})`
-    : "messer";
-  process.stdout.write(
-    `${String.fromCharCode(27)}]0;${title}${String.fromCharCode(7)}`,
-  );
+  // const title = unreadMessagesCount
+  //   ? `messer (${unreadMessagesCount})`
+  //   : "messer";
+  // process.stdout.write(
+  //   `${String.fromCharCode(27)}]0;${title}${String.fromCharCode(7)}`,
+  // );
 }
 
 /**
