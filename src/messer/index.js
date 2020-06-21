@@ -2,7 +2,6 @@ const { Messen } = require("messen");
 const imessage = require("osa-imessage");
 const logger = require("../util/logger");
 
-const repl = require("./repl");
 const settings = require("./settings");
 const helpers = require("../util/helpers");
 const lock = require("./lock");
@@ -80,9 +79,7 @@ Messer.prototype.registerEventHandler = function registerEventHandler(
   this._eventHandlers[eventType] = handler;
 };
 
-Messer.prototype.log = repl.log;
-
-Messer.prototype.setPrompt = repl.setPrompt;
+Messer.prototype.log = logger.log;
 
 /**
  * Starts a Messer session.
@@ -107,8 +104,8 @@ Messer.prototype.start = function start(interactive = true, rawCommand) {
       this.messen.listen();
 
       imessage.listen().on('message', (msg) => {
-        console.log(`'${msg.text}' from ${msg.handle}`);
-        if (msg.handle == '+17035682167') {
+        if (!msg.fromMe && msg.handle == 'samuel.c.hsiang@gmail.com') {
+          console.log(`> ${msg.text}`);
           this.processCommand(msg.text)
             .then(res => {
               logger.log(res);
@@ -118,50 +115,6 @@ Messer.prototype.start = function start(interactive = true, rawCommand) {
             });
         }
       })
-
-
-      // repl.start({
-	    //   prompt: '',
-      //   ignoreUndefined: true,
-      //   eval: (input, context, filename, cb) => {
-      //     return this.processCommand(input)
-      //       .then(res => {
-      //         repl.log(res);
-      //         return cb(null);
-      //       })
-      //       .catch(err => {
-      //         repl.log(err.message);
-      //         return cb(null);
-      //       });
-      //   },
-      //   completer: line => {
-      //     const argv = line.match(/([A-z]+)\s+"(.*)/);
-
-      //     if (!argv || !argv[1] || !argv[2]) return [[], line];
-
-      //     const command = argv[1];
-      //     const nameQuery = argv[2];
-
-      //     const { friends } = this.messen.store.users.me;
-
-      //     const getCompletions = users => {
-      //       return users.map(user => {
-      //         return `${command} "${user.name}"`;
-      //       });
-      //     };
-
-      //     const completions = getCompletions(friends);
-
-      //     const hits = getCompletions(
-      //       friends.filter(user =>
-      //         user.name.toLowerCase().startsWith(nameQuery.toLowerCase()),
-      //       ),
-      //     );
-
-      //     // Show all completions if none found
-      //     return [hits.length ? hits : completions, line];
-      //   },
-      // });
     })
     .catch(err => {
       console.log(err.message || err);
@@ -179,7 +132,7 @@ Messer.prototype.processCommand = function processCommand(rawCommand) {
   // if we're in a lock, hack args to use the `message` command
   if (this.lock.isLocked()) {
     argv = rawCommand.match(/.*/);
-    if (rawCommand === "--unlock\n") {
+    if (rawCommand.startsWith("--unlock")) {
       argv[1] = "--unlock";
       rawCommand = "--unlock";
     } else {

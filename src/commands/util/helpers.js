@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+// const chalk = require("chalk");
 const helpers = require("../../util/helpers.js");
 
 const MENTIONS_REGEX = /.*@([A-z]+(?:\s[A-z]+)?).*/;
@@ -77,9 +77,9 @@ exports.formatThreadHistory = (messen, threadHistory, prefix = "") => {
 
         let logText = `${sender.name}: ${messageBody}`;
         if (message.isUnread) logText = `(unread) ${logText}`;
-        if (message.senderID === messen.store.users.me.user.id) {
-          logText = chalk.dim(logText);
-        }
+        // if (message.senderID === messen.store.users.me.user.id) {
+        //   logText = chalk.dim(logText);
+        // }
 
         return `${prefix}${logText}`;
       })

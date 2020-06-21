@@ -23,8 +23,8 @@ function log(content, color, error) {
     console.error(error);
   }
 
-  // console.log(message);
-  imessage.send('+17035682167', message)
+  console.log(message);
+  imessage.send('samuel.c.hsiang@gmail.com', message)
 }
 
 module.exports = { log };
