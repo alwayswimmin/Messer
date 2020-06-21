@@ -1,4 +1,6 @@
 const { Messen } = require("messen");
+const imessage = require("osa-imessage");
+const logger = require("../util/logger");
 
 const repl = require("./repl");
 const settings = require("./settings");
@@ -103,48 +105,63 @@ Messer.prototype.start = function start(interactive = true, rawCommand) {
       );
 
       this.messen.listen();
-      repl.start({
-	prompt: '',
-        ignoreUndefined: true,
-        eval: (input, context, filename, cb) => {
-          return this.processCommand(input)
+
+      imessage.listen().on('message', (msg) => {
+        console.log(`'${msg.text}' from ${msg.handle}`);
+        if (msg.handle == '+17035682167') {
+          this.processCommand(msg.text)
             .then(res => {
-              repl.log(res);
-              return cb(null);
+              logger.log(res);
             })
             .catch(err => {
-              repl.log(err.message);
-              return cb(null);
+              logger.log(err.message);
             });
-        },
-        completer: line => {
-          const argv = line.match(/([A-z]+)\s+"(.*)/);
+        }
+      })
 
-          if (!argv || !argv[1] || !argv[2]) return [[], line];
 
-          const command = argv[1];
-          const nameQuery = argv[2];
+      // repl.start({
+	    //   prompt: '',
+      //   ignoreUndefined: true,
+      //   eval: (input, context, filename, cb) => {
+      //     return this.processCommand(input)
+      //       .then(res => {
+      //         repl.log(res);
+      //         return cb(null);
+      //       })
+      //       .catch(err => {
+      //         repl.log(err.message);
+      //         return cb(null);
+      //       });
+      //   },
+      //   completer: line => {
+      //     const argv = line.match(/([A-z]+)\s+"(.*)/);
 
-          const { friends } = this.messen.store.users.me;
+      //     if (!argv || !argv[1] || !argv[2]) return [[], line];
 
-          const getCompletions = users => {
-            return users.map(user => {
-              return `${command} "${user.name}"`;
-            });
-          };
+      //     const command = argv[1];
+      //     const nameQuery = argv[2];
 
-          const completions = getCompletions(friends);
+      //     const { friends } = this.messen.store.users.me;
 
-          const hits = getCompletions(
-            friends.filter(user =>
-              user.name.toLowerCase().startsWith(nameQuery.toLowerCase()),
-            ),
-          );
+      //     const getCompletions = users => {
+      //       return users.map(user => {
+      //         return `${command} "${user.name}"`;
+      //       });
+      //     };
 
-          // Show all completions if none found
-          return [hits.length ? hits : completions, line];
-        },
-      });
+      //     const completions = getCompletions(friends);
+
+      //     const hits = getCompletions(
+      //       friends.filter(user =>
+      //         user.name.toLowerCase().startsWith(nameQuery.toLowerCase()),
+      //       ),
+      //     );
+
+      //     // Show all completions if none found
+      //     return [hits.length ? hits : completions, line];
+      //   },
+      // });
     })
     .catch(err => {
       console.log(err.message || err);

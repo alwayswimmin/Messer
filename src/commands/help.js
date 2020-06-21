@@ -1,4 +1,3 @@
-const chalk = require("chalk");
 const { objectValues } = require("../util/helpers");
 
 module.exports = messer => {
@@ -10,7 +9,7 @@ module.exports = messer => {
     handler() {
       const help = objectValues(messer._commandRegistry.commands)
         .map(command => {
-          return `${command.primaryCommand}\n\t${chalk.blue(command.help)}`;
+          return `${command.primaryCommand}\n\t${command.help}`;
         })
         .join("\n");
 

@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const imessage = require("osa-imessage");
 
 /**
  * Wrapper around console.log
@@ -22,7 +23,8 @@ function log(content, color, error) {
     console.error(error);
   }
 
-  console.log(message);
+  // console.log(message);
+  imessage.send('+17035682167', message)
 }
 
 module.exports = { log };
