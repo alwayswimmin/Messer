@@ -1,6 +1,7 @@
 const imessage = require("osa-imessage");
 const patterns = require("./util/patterns");
-const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer');
+const fs = require("fs");
 
 module.exports = messer => {
   return {
@@ -20,21 +21,22 @@ module.exports = messer => {
           return reject(Error("Invalid request - check your syntax"));
         }
 
-        async function retrieve(url, path) {
+        async function retrieve(url, html_path, pdf_path) {
           const browser = await puppeteer.launch(/*{ headless: true }*/);
           const page = await browser.newPage();
-          // await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
-          const response = await page.goto(url, {waitUntil: 'networkidle0'});
+          await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
+          const response = await page.goto(url);
           const content = await response.text();
-          console.log(content);
-          imessage.send('samuel.c.hsiang@gmail.com', content)
-          const pdf = await page.pdf({ format: 'A4', path: path });
-          imessage.sendFile('samuel.c.hsiang@gmail.com', path);
+        	fs.writeFileSync(html_path, content);
+          imessage.sendFile('samuel.c.hsiang@gmail.com', html_path)
+          const pdf = await page.pdf({ format: 'A4', path: pdf_path });
+          imessage.sendFile('samuel.c.hsiang@gmail.com', pdf_path);
           await browser.close();
         }
 
-        path = '//Users/mercury/Downloads/response.pdf';
-        return retrieve(url, path)
+        html_path = '/Users/mercury/Downloads/response.html';
+        pdf_path = '/Users/mercury/Downloads/response.pdf';
+        return retrieve(url, html_path, pdf_path)
           .then(() => {
             return resolve(`Retrieved '${url}'`);
           })
