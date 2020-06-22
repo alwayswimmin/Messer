@@ -10,6 +10,7 @@ module.exports = [
   require("./message"),
   require("./recent"),
   require("./reply"),
+  require("./request"),
   require("./settings"),
   require("./threads"),
   require("./unlock"),
